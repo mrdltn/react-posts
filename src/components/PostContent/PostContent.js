@@ -1,14 +1,16 @@
 import { posts } from '../shared/projectData';
 import './PostContent.css';
+import { PostComponent } from './components/PostComponent';
 
 export const PostContent = () => {
 
     const masPosts = posts.map((item) => {
         return (
-            <div key={item.id} className="post">
-                <h2>{item.title}</h2>
-                <p>{item.body}</p>
-            </div>
+            <PostComponent
+                key = {item.id}
+                title = {item.title} //пропсы статичны
+                body = {item.body}
+            />
         )
     })
 
