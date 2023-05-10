@@ -11,7 +11,7 @@ export function App() {
       <main>
         <PostContent/>
       </main>
-      <Footer/>
+      <Footer year = {new Date().getFullYear()}/>
     </div>
   );
 }
