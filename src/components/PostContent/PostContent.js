@@ -1,6 +1,6 @@
 import { Component } from 'react';
 // import { posts } from '../../shared/projectData.js'
-import './PostContent.css';
+import stylesPostContent from './PostContent.module.css';
 import { PostComponent } from './components/PostComponent';
 import axios from 'axios';
 
@@ -40,17 +40,29 @@ export class PostContent extends Component {
         })
     }
 
-    likePost = pos => {
-        const tempArr = [...this.state.postArr];
-        tempArr[pos].liked = !tempArr[pos].liked;
+    likePost = (postItem) => {
+        // const tempArr = [...this.state.postArr];
+        // tempArr[pos].liked = !tempArr[pos].liked;
+        // this.setState({ postArr: tempArr });
+        // localStorage.setItem('masPosts', JSON.stringify(tempArr));
+        const tempArr = {...postItem};
+        tempArr.liked = !tempArr.liked;
 
-        this.setState({ postArr: tempArr });
-
-        localStorage.setItem('masPosts', JSON.stringify(tempArr));
+        axios.put(`https://645a428f65bd868e9315acf0.mockapi.io/api/posts/${postItem.id}`, tempArr)
+            .then((res) => {
+                console.log('Post changed', res.data);
+                this.getPosts();
+            })
+            .catch((err) => {
+                console.log(err);
+            })
     }
 
     deletePost = (postItem) => { 
         if(window.confirm(`Are you ready to delete the Post "${postItem.title}" ?`)) {
+            this.setState({
+                isPending: true
+            })
             axios.delete(`https://645a428f65bd868e9315acf0.mockapi.io/api/posts/${postItem.id}`)
                 .then((res) => {
                     console.log('Post deleted', res.data);
@@ -80,7 +92,7 @@ export class PostContent extends Component {
                     body = {item.body}
                     // pos = {pos}
                     liked = {item.liked}
-                    likePost = {() => this.likePost(pos)}
+                    likePost = {() => this.likePost(item)}
                     deletePost = {() => this.deletePost(item)}
                 />
             )
@@ -106,7 +118,7 @@ export class PostContent extends Component {
                         {
                             this.state.isPending && <h2>loading, please wait...</h2>
                         }
-                        <div className="posts"> {masPosts} </div>
+                        <div className = { stylesPostContent.posts }> {masPosts} </div>
                     </>
                 }
                 
