@@ -9,17 +9,9 @@ export class PostContent extends Component {
     // поменять на useState
     state = {
         showPosts: true,
-        postArr: []
+        postArr: [],
+        isPending: false
         // postArr: JSON.parse(localStorage.getItem('masPosts')) || posts 
-    }
-
-    likePost = pos => {
-        const tempArr = [...this.state.postArr];
-        tempArr[pos].liked = !tempArr[pos].liked;
-
-        this.setState({ postArr: tempArr });
-
-        localStorage.setItem('masPosts', JSON.stringify(tempArr));
     }
 
     togglePost = () => {
@@ -31,26 +23,51 @@ export class PostContent extends Component {
             // console.log('2, но будет выведен первым!');
     }
 
-    deletePost = pos => { 
-        if(window.confirm(`Are you ready to delete the Post "${this.state.postArr[pos].title}" ?`)) {
-            const temp = [...this.state.postArr];
-            temp.splice(pos, 1);
-            this.setState({ postArr: temp});
-            localStorage.setItem('masPosts', JSON.stringify(temp));
+    getPosts = () => {
+        this.setState({
+            isPending: true
+        })
+        axios
+        .get('https://645a428f65bd868e9315acf0.mockapi.io/api/posts')
+        .then((res) => {
+            this.setState({
+                postArr: res.data,
+                isPending: false
+            })
+        })
+        .catch((err) => {
+            console.log(err);
+        })
+    }
+
+    likePost = pos => {
+        const tempArr = [...this.state.postArr];
+        tempArr[pos].liked = !tempArr[pos].liked;
+
+        this.setState({ postArr: tempArr });
+
+        localStorage.setItem('masPosts', JSON.stringify(tempArr));
+    }
+
+    deletePost = (postItem) => { 
+        if(window.confirm(`Are you ready to delete the Post "${postItem.title}" ?`)) {
+            axios.delete(`https://645a428f65bd868e9315acf0.mockapi.io/api/posts/${postItem.id}`)
+                .then((res) => {
+                    console.log('Post deleted', res.data);
+                    this.getPosts();
+                })
+                .catch((err) => {
+                    console.log(err);
+                })
+            // const temp = [...this.state.postArr];
+            // temp.splice(pos, 1);
+            // this.setState({ postArr: temp});
+            // localStorage.setItem('masPosts', JSON.stringify(temp));
         }
     }
 
     componentDidMount() {
-        axios
-            .get('https://645a428f65bd868e9315acf0.mockapi.io/api/posts')
-            .then((res) => {
-                this.setState({
-                    postArr: res.data
-                })
-            })
-            .catch((err) => {
-                console.log(err);
-            })
+        this.getPosts();
     }
 
     render() {
@@ -64,7 +81,7 @@ export class PostContent extends Component {
                     // pos = {pos}
                     liked = {item.liked}
                     likePost = {() => this.likePost(pos)}
-                    deletePost = {() => this.deletePost(pos)}
+                    deletePost = {() => this.deletePost(item)}
                 />
             )
         })
@@ -85,7 +102,10 @@ export class PostContent extends Component {
                 {
                     this.state.showPosts &&
                     <>
-                        <h1>Simple Post</h1>
+                        <h1>Post search</h1>
+                        {
+                            this.state.isPending && <h2>loading, please wait...</h2>
+                        }
                         <div className="posts"> {masPosts} </div>
                     </>
                 }
