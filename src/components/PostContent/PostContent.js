@@ -30,6 +30,15 @@ export class PostContent extends Component {
             // console.log('2, но будет выведен первым!');
     }
 
+    deletePost = pos => { 
+        if(window.confirm(`Are you ready to delete the Post "${this.state.postArr[pos].title}" ?`)) {
+            const temp = [...this.state.postArr];
+            temp.splice(pos, 1);
+            this.setState({ postArr: temp});
+            localStorage.setItem('masPosts', JSON.stringify(temp));
+        }
+     }
+
     render() {
 
         const masPosts = this.state.postArr.map((item, pos) => {
@@ -41,6 +50,7 @@ export class PostContent extends Component {
                     // pos = {pos}
                     liked = {item.liked}
                     likePost = {() => this.likePost(pos)}
+                    deletePost = {() => this.deletePost(pos)}
                 />
             )
         })

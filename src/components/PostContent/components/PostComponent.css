@@ -1,3 +1,9 @@
-.post img {
-    width: 20px;
+.post {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.deleteBtn svg {
+    font-size: 40px;
 }
