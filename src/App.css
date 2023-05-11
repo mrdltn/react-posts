@@ -17,6 +17,8 @@ a {
 button {
   outline: unset;
   border: none;
+  cursor: pointer;
+  border-color: unset;
 }
 
 main {

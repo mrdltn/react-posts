@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import { posts } from '../shared/projectData';
+import { posts } from '../../shared/projectData.js'
 import './PostContent.css';
 import { PostComponent } from './components/PostComponent';
 
@@ -7,29 +7,44 @@ export class PostContent extends Component {
 
     // поменять на useState
     state = {
-        showPosts: true
+        showPosts: true,
+        // postArr: posts
+        postArr: JSON.parse(localStorage.getItem('masPosts')) || posts 
     }
 
-    masPosts = posts.map((item) => {
-        return (
-            <PostComponent
-                key = {item.id}
-                title = {item.title} //пропсы статичны
-                body = {item.body}
-            />
-        )
-    })
+    likePost = pos => {
+        const tempArr = [...this.state.postArr];
+        tempArr[pos].liked = !tempArr[pos].liked;
+
+        this.setState({ postArr: tempArr });
+
+        localStorage.setItem('masPosts', JSON.stringify(tempArr));
+    }
 
     togglePost = () => {
         //this.setState асинхронный, потому смотри логи
-        this.setState((state) => {
-            console.log('1, но он будет выведен вторым ');
-            return {showPosts: !state.showPosts}
+        this.setState(({showPosts}) => {
+            // console.log('1, но он будет выведен вторым ');
+            return {showPosts: !showPosts}
         })
-            console.log('2, но будет выведен первым!');
+            // console.log('2, но будет выведен первым!');
     }
 
     render() {
+
+        const masPosts = this.state.postArr.map((item, pos) => {
+            return (
+                <PostComponent
+                    key = {item.id}
+                    title = {item.title} //пропсы статичны
+                    body = {item.body}
+                    // pos = {pos}
+                    liked = {item.liked}
+                    likePost = {() => this.likePost(pos)}
+                />
+            )
+        })
+
         return (
             <>
                 {/* {
@@ -44,9 +59,7 @@ export class PostContent extends Component {
                     this.state.showPosts ?
                     <>
                         <h1>Simple Post</h1>
-                        <div className="posts">
-                            {this.masPosts}
-                        </div>
+                        <div className="posts"> {masPosts} </div>
                     </>
                     : null
                 }
