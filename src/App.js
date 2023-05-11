@@ -4,8 +4,12 @@ import { Header } from './components/Header/Header.js';
 import { PostContent } from './components/PostContent/PostContent';
 import { Footer } from './components/Footer/Footer';
 import { SearchPost } from './components/Search/searchPost';
+import { useState } from 'react';
 
 export function App() {
+
+  // const [allPosts, favoritePosts] = useState(false);
+
   return (
     <div className="App">
       <Header/>

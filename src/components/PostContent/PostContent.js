@@ -40,15 +40,25 @@ export class PostContent extends Component {
         })
     }
 
-    likePost = (postItem) => {
-        // const tempArr = [...this.state.postArr];
-        // tempArr[pos].liked = !tempArr[pos].liked;
-        // this.setState({ postArr: tempArr });
-        // localStorage.setItem('masPosts', JSON.stringify(tempArr));
-        const tempArr = {...postItem};
-        tempArr.liked = !tempArr.liked;
+    // getFavoritePosts = () => { //////////
+    //     axios
+    //     .get(likePost)
+    //     .then((res) => {
+    //         this.setState({
+    //             postArr: res.data,
+    //             isPending: false
+    //         })
+    //     })
+    //     .catch((err) => {
+    //         console.log(err);
+    //     })
+    // }
 
-        axios.put(`https://645a428f65bd868e9315acf0.mockapi.io/api/posts/${postItem.id}`, tempArr)
+    likePost = (postItem) => {
+        const favoriteArr = {...postItem};
+        favoriteArr.liked = !favoriteArr.liked;
+
+        axios.put(`https://645a428f65bd868e9315acf0.mockapi.io/api/posts/${postItem.id}`, favoriteArr)
             .then((res) => {
                 console.log('Post changed', res.data);
                 this.getPosts();
@@ -80,6 +90,7 @@ export class PostContent extends Component {
 
     componentDidMount() {
         this.getPosts();
+        // this.getFavoritePosts(); ////////
     }
 
     render() {
@@ -90,10 +101,10 @@ export class PostContent extends Component {
                     key = {item.id}
                     title = {item.title} //пропсы статичны
                     body = {item.body}
-                    // pos = {pos}
                     liked = {item.liked}
                     likePost = {() => this.likePost(item)}
                     deletePost = {() => this.deletePost(item)}
+                    // getFavoritePosts = {() => this.getFavoritePosts} ///////
                 />
             )
         })
