@@ -1,15 +1,16 @@
 import { Component } from 'react';
-import { posts } from '../../shared/projectData.js'
+// import { posts } from '../../shared/projectData.js'
 import './PostContent.css';
 import { PostComponent } from './components/PostComponent';
+import axios from 'axios';
 
 export class PostContent extends Component {
 
     // поменять на useState
     state = {
         showPosts: true,
-        // postArr: posts
-        postArr: JSON.parse(localStorage.getItem('masPosts')) || posts 
+        postArr: []
+        // postArr: JSON.parse(localStorage.getItem('masPosts')) || posts 
     }
 
     likePost = pos => {
@@ -37,7 +38,20 @@ export class PostContent extends Component {
             this.setState({ postArr: temp});
             localStorage.setItem('masPosts', JSON.stringify(temp));
         }
-     }
+    }
+
+    componentDidMount() {
+        axios
+            .get('https://645a428f65bd868e9315acf0.mockapi.io/api/posts')
+            .then((res) => {
+                this.setState({
+                    postArr: res.data
+                })
+            })
+            .catch((err) => {
+                console.log(err);
+            })
+    }
 
     render() {
 
@@ -55,6 +69,9 @@ export class PostContent extends Component {
             )
         })
 
+        if(this.state.postArr.length === 0)
+            return <h1>Data loading...</h1>
+
         return (
             <>
                 {/* {
@@ -66,12 +83,11 @@ export class PostContent extends Component {
                     }
                 </button>
                 {
-                    this.state.showPosts ?
+                    this.state.showPosts &&
                     <>
                         <h1>Simple Post</h1>
                         <div className="posts"> {masPosts} </div>
                     </>
-                    : null
                 }
                 
             </>
