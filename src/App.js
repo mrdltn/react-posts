@@ -3,23 +3,21 @@ import './App.css';
 import { Header } from './components/Header/Header.js';
 import { PostContent } from './components/PostContent/PostContent';
 import { Footer } from './components/Footer/Footer';
-import { SearchPost } from './components/Search/searchPost';
-import { useState } from 'react';
+import SearchPost from './components/Search/SearchPost';///
 
-export function App() {
 
-  // const [allPosts, favoritePosts] = useState(false);
+function App() {
 
   return (
-    <div className="App">
+      <div className="App">
       <Header/>
       <main>
-        <SearchPost />
+        <SearchPost /> 
         <PostContent/>
       </main>
       <Footer year = {new Date().getFullYear()}/>
     </div>
-  );
+  )
 }
 
-// export default App;
+export default App;
